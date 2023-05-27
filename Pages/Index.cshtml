@@ -1,0 +1,38 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card shadow bg-light border border-dark">
+                <div class="card-title text-center border-bottom bg-light">
+                    <h2 class="p-3 bg-light">Sign In</h2>
+                </div>
+                <div class="card-body bg-light">
+                    <form method="Post" class="bg-light">
+                        <div class="mb-4">
+                            <label asp-for="View.Email">Email</label>
+                            <input type="email" class="form-control" placeholder=" Enter your Email" asp-for="View.Email">
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="View.Password">Password</label>
+                            <input type="password" class="form-control" placeholder="Enter password" asp-for="View.Password">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn text-light btn-info main-bg">Sign in</button>
+                        </div>
+                        <div class="d-grid">
+                            <p class="justify-content-center">Don't Have an account? <a href="~/manage/Account/SignUp" class="justify-content-center text-primary ">Sign Up</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

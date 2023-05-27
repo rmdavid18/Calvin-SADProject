@@ -1,0 +1,88 @@
+﻿@page
+@model Capstonep2.Pages.Manage.Patient.EditApptModel
+@{
+}
+
+<h1 class="text-center">Edit Appointment</h1>
+
+
+<form method="Post" asp-page-handler="edit">
+    <label>Symptoms</label>
+    <div class="form-group justify-content-center">
+        <select class="form-control selectSymptom" name="View.SymptomsEdit" multiple>
+            @{
+                if (Model.View.Services != null && Model.View.Services.Count() > 0)
+                {
+                    foreach (var symptom in Model.View.Services)
+                    {
+                        <option value="@symptom.Id">@symptom.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+
+
+    <label>Purpose Of Visit</label>
+    <div class="form-group justify-content-center w-100">
+        <select class="form-control selectPurposes w-100" name="View.PurposesEdit" multiple>
+            @{
+                if (Model.View.Providers!= null && Model.View.Providers.Count() > 0)
+                {
+                    foreach (var purpose in Model.View.Providers)
+                    {
+                        <option value="@purpose.Id">@purpose.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="form-group alert-danger">
+        @Html.ValidationSummary()
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+
+
+
+
+@section Scripts 
+{
+
+    <script>
+        $('.selectPurposes').select2({
+            ajax: {
+                url: '?handler=purpose',
+                data: function (params) {
+                    var query = {
+                        keyword: params.term,
+                        page: params.page || 1
+                    }
+                    return query;
+                },
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+            }
+        });
+    </script>
+
+    <script>
+        $('.selectSymptom').select2({
+            ajax: {
+                url: '?handler=symptom',
+                data: function (params) {
+                    var query = {
+                        keyword: params.term,
+                        page: params.page || 1
+                    }
+                    return query;
+                },
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+            }
+        });
+    </script>
+
+}

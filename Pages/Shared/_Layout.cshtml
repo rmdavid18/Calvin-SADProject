@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SAD-Project</title>
+    <link rel="stylesheet" href="~/bootsrap/bootstrap.css" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="~/select2/select2.css">
+</head>
+<body class="bg-info">
+    <header>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-6 px-0">
+                    
+                    </div>
+                </div>
+            </div>
+        
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted fixed-bottom">
+        <div class="container">
+            &copy; 2023 - Capstonep2 - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/jquery/jquery-3.6.3.js"></script>
+    <script src="~/select2/select2.full.min.js"></script>
+    <script src="~/select2/select2-custom.js"></script>
+    <script src="~/bootsrap/bootstrap.js"></script>
+    <script src="~/scanner/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

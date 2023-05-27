@@ -1,0 +1,403 @@
+﻿@page
+@model Capstonep2.Pages.Manage.Patient.DashboardModel
+@using Capstonep2.Infrastructure.Domain.Models.Enums;
+@using Capstonep2.Infrastructure.Domain.Security;
+@{
+}
+<div class="col-auto">
+    <br />
+    <ul class="nav nav-tabs" role="tablist">
+
+        <li class="nav-item">
+            <button href="#profile" class="nav-link active" role="tab" data-bs-toggle="tab">PROFILE</button>
+        </li>
+
+        <li class="nav-item">
+            <button href="#settings" class="nav-link" role="tab" data-bs-toggle="tab">PROFILE SETTING</button>
+        </li>
+
+        <li class="nav-item">
+            <button href="#rec" class="nav-link " role="tab" data-bs-toggle="tab">RECORD</button>
+        </li>
+        <li class="nav-item">
+            <button href="#appts" class="nav-link " role="tab" data-bs-toggle="tab">REQUEST APPOINTMENT</button>
+        </li>
+
+
+
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="profile">
+            <div class="card bg-light">
+
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name:</th>
+                            <td>@ViewData["firstname"] @ViewData["middlename"] @ViewData["lastname"]</td>
+                        </tr>
+                        <tr>
+                            <th>Gender:</th>
+                            <td>@ViewData["gender"]</td>
+                        </tr>
+                        <tr>
+                            <th>Birthdate:</th>
+                            <td>@ViewData["birthdate"]</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>@ViewData["email"]</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>@ViewData["address"]</td>
+                        </tr>
+                    </table>
+
+
+                </div>
+                <div class="card-footer">
+                    <div id="printable">
+                        <div id="qrcode"></div>
+                    </div>
+                    <button id="rprint">PRINT</button>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <div role="tabpanel" class="tab-pane" id="settings">
+
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangeInfo">
+                Change User Info
+            </button>
+            <div class="collapse" id="collapseChangeInfo">
+                <form method="Post" asp-page-handler="ChangeProfile">
+                    <div class="form-group">
+                        <label asp-for="View.FirstName">First Name</label>
+                        <input type="text" class="form-control" placeholder="Enter First Name" asp-for="View.FirstName" id="FName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.MiddleName">Middle Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Middle Name" asp-for="View.MiddleName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.LastName">Last Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Last Name" asp-for="View.LastName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.Address">Address</label>
+                        <input type="text" class="form-control" placeholder="Enter Address" asp-for="View.Address">
+                    </div>
+
+
+                    <div class="form-group alert-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangePass">
+                Change Password
+            </button>
+
+            <div class="collapse" id="collapseChangePass">
+                <form method="Post" asp-page-handler="ChangePass">
+                    <div class="form-group">
+                        <label asp-for="View.CurrentPass">Current Password</label>
+                        <input asp-for="View.CurrentPass" type="text" class="form-control" placeholder="Enter Current password">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.NewPass">New Password</label>
+                        <input asp-for="View.NewPass" type="text" class="form-control" placeholder="Enter New password">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.RetypedPassword">Re-type New Password</label>
+                        <input asp-for="View.RetypedPassword" type="text" class="form-control" placeholder="Enter new Password">
+                    </div>
+                    <div class="form-group alert-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Update password</button>
+                        <a href="~/dashboard/patient" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+        <div role="tabpanel" class="tab-pane" id="appts">
+            <div class="row justify-content-md-center">
+                <div class="container-fluid">
+
+                    <div class="card border border-dark bg-light">
+                        <div class="card-header justify-content-center">
+                            <h3 class="justify-content-center fw-bold">Create Appointment</h3>
+                        </div>
+                        <div class="card-body bg-light">
+                            <div class="container">
+                                <form method="Post" asp-page-handler="Appointment">
+                                    <div class="form-group justify-content-center">
+                                        <label asp-for="View.StartTime">StartTime</label>
+                                        <input type="datetime-local" id="picker" data-format="mm-dd-yyyy" class="form-control" placeholder="Enter user name" asp-for="View.StartTime">
+                                    </div>
+
+                                    <label>Services</label>
+                                    <div class="form-group justify-content-center">
+                                        <select class="form-control selectSymptom" name="View.SymptomList" multiple>
+                                            @{
+                                                if (Model.View.Services != null && Model.View.Services.Count() > 0)
+                                                {
+                                                    foreach (var service in Model.View.Services)
+                                                    {
+                                                        <option value="@service.Id">@service.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <label>Providers</label>
+                                    <div class="form-group justify-content-center w-100">
+                                        <select class="form-control selectPurpose w-100" name="View.PurposeList" multiple>
+                                            @{
+                                                if (Model.View.Providers != null && Model.View.Providers.Count() > 0)
+                                                {
+                                                    foreach (var provider in Model.View.Providers)
+                                                    {
+                                                        <option value="@provider.Id">@provider.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group alert-danger">
+                                        @Html.ValidationSummary()
+                                    </div>
+                                    <div class="row align-content-center justify-content-center">
+                                        <button type="submit" class=" col-5 btn btn-success border border-light justify-content-center">Submit</button>
+                                    </div>
+                                    <div class="row align-content-center justify-content-center">
+                                        <a href="~/manage/dashboard/client/" class=" col-5 btn btn-secondary border border-light justify-content-center">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="rec">
+            <div class="row">
+
+                <div class="col-3 mb-3">
+                    <div class="form-group">
+                        <label for="">Filter by Status</label>
+                        <select class="form-control" id="recfilterBy" asp-for="View.StatusFilters">
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="noshow">Noshow</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Filter by Date</label>
+                        <input type="date" class="form-control" id="recfilterDate" placeholder="Select date">
+                    </div>
+                </div>
+            </div>
+
+
+            <table class="table table-bordered">
+                <thead class="table-info">
+                    <tr>
+                        <th class="text-center">NAME</th>
+                        <th class="text-center"> DATE AND TIME</th>
+                        <th>TYPE OF VISIT</th>
+                        <th class="text-center">STATUS</th>
+                        <th class="text-center">DETAILS</th>
+
+                    </tr>
+
+                </thead>
+                <tbody class="bg-light">
+
+                    @if (Model.View != null && Model.View.Appointments != null && Model.View.Appointments.Items.Count > 0)
+                    {
+
+
+                        foreach (var appointment in Model?.View?.Appointments?.Items)
+                        {
+                            <tr>
+                                <td>@appointment?.Client?.FirstName @appointment.Client?.LastName</td>
+                                <td> @appointment.StartTime.Value.ToString("dd/MM/yyyy")  @appointment.StartTime.Value.ToString("H:mm tt") - @appointment.EndTime.Value.ToString("H:mm tt") </td>
+                                <td>@appointment.Visit</td>
+                                <td>@appointment.Status</td>
+
+                                <td>
+                                    @if (appointment.Status == Status.Completed || appointment.Status == Status.Cancelled || appointment.Status == Status.NoShow || appointment.Status == Status.InProgress || appointment.Status == Status.Pending)
+                                    {
+                                        <a href="~/manage/client/pViewdetails?id=@appointment.ID" class="btn btn-info">
+                                            <i class="fa fa-pencil">View</i>
+                                        </a>
+
+                                    }
+
+
+                                </td>
+
+
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @{
+                        if (Model?.View?.Appointments?.PageIndex > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="/manage/client/Dashboard?pageIndex=@(Model?.View?.Appointments?.PageIndex-1)&pageSize=@(Model?.View?.Appointments?.PageSize)&sortBy=@(Model?.View?.Appointments?.SortBy)&sortOrder=@(Model?.View?.Appointments?.SortOrder)">Previous</a></li>
+                        }
+
+                        <li class="page-item"><span class="page-link">page @Model?.View?.Appointments?.PageIndex of @Model?.View?.Appointments?.PageCount (@Model?.View?.Appointments?.TotalRows total rows)</span></li>
+
+
+                        if (Model?.View?.Appointments?.PageIndex < Model?.View?.Appointments?.PageCount)
+                        {
+                            <li class="page-item"><a class="page-link" href="/manage/client/Dashboard?pageIndex=@(Model?.View?.Appointments?.PageIndex+1)&pageSize=@(Model?.View?.Appointments?.PageSize)&sortBy=@(Model?.View?.Appointments?.SortBy)&sortOrder=@(Model?.View?.Appointments?.SortOrder)">Next</a></li>
+                        }
+                    }
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts{
+
+    <script>
+
+        window.addEventListener("load", () => {
+            var link = "https://localhost:25788/manage/admin/viewclient?id=" + "@ViewData["PatientID"]"
+            var qrc = new QRCode(document.getElementById("qrcode"), link);
+        });
+        $("#rprint").click(function () {
+
+
+            var prtContent = document.getElementById("printable");
+            var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+            WinPrint.document.write(prtContent.innerHTML);
+            WinPrint.document.close();
+            WinPrint.focus();
+            WinPrint.print();
+            WinPrint.close();
+        });
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var url = window.location.href;
+            var activeTab = url.substring(url.indexOf("#") + 1);
+            if (activeTab == "rec") {
+                $(".tab-pane").removeClass("active");
+                $("#" + activeTab).addClass("active");
+                $(".nav-link").removeClass("active");
+                $("#Nav" + activeTab).addClass("active");
+                $('a[href="' + activeTab + '"]').tab('show')
+
+            }
+        });
+
+
+
+                });
+        $("#recfilterBy").change(function () {
+            window.location = "/manage/client/dashboard?keyword=@(Model.View.Appointments?.Keyword)&sortBy=" + $("#aptssortBy").val() + "&sortOrder=" + $("#aptssortOrder").val() + "&status=" + $("#recfilterBy").val() + "&date=" + $("#recfilterDate").val() + "#rec";
+        });
+        $("#recfilterDate").change(function () {
+            window.location = "/manage/cliet/dashboard?keyword=@(Model.View.Appointments?.Keyword)&sortBy=" + $("#aptssortBy").val() + "&sortOrder=" + $("#aptssortOrder").val() + "&status=" + $("#recfilterBy").val() + "&date=" + $("#recfilterDate").val() + "#rec";
+        });
+
+        function getPraetors(id) {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '?handler=Praetors&id=' + id,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                success: function (data) {
+                    if (data) {
+                        $("#praetorsListModalUl").html("");
+                        $.each(data, function (index, item) {
+                            $("#praetorsListModalUl").append("<li>" + item + "</li>")
+                        });
+                        $("#praetorsListModal").modal("show");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr);
+                }
+            });
+        }
+
+
+
+    </script>
+
+    <script>
+        $('.selectSymptom').select2({
+            ajax: {
+                url: '?handler=symptom',
+                data: function (params) {
+                    var query = {
+                        keyword: params.term,
+                        page: params.page || 1
+                    }
+                    return query;
+                },
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+            }
+        });
+    </script>
+
+
+    <script>
+        $('.selectPurpose').select2({
+            ajax: {
+                url: '?handler=purpose',
+                data: function (params) {
+                    var query = {
+                        keyword: params.term,
+                        page: params.page || 1
+                    }
+                    return query;
+                },
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+            }
+        });
+    </script>
+}
+

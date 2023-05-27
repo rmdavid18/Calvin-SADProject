@@ -1,0 +1,816 @@
+﻿@page
+@model Capstonep2.Pages.Manage.Admin.DashboardModel
+@using Capstonep2.Infrastructure.Domain.Models.Enums;
+@{
+}
+<div class="col-auto">
+    <br />
+    <ul class="nav nav-tabs" role="tablist" id="myTab">
+
+        <li class="nav-item">
+            <button href="#profile" class="nav-link active" role="tab" data-bs-toggle="tab">PROFILE</button>
+        </li>
+
+        <li class="nav-item">
+            <button href="#settings" class="nav-link" role="tab" data-bs-toggle="tab">PROFILE SETTING</button>
+        </li>
+
+        <li class="nav-item">
+            <button href="#appts" class="nav-link " role="tab" data-bs-toggle="tab" id="Navappts">APPOINTMENT LIST</button>
+        </li>
+
+        <li class="nav-item">
+            <button href="#patients" class="nav-link " role="tab" data-bs-toggle="tab" id="Navpatients">CLIENT LIST</button>
+        </li>
+
+        <li class="nav-item">
+            <button href="#user" class="nav-link " role="tab" data-bs-toggle="tab">USER LIST</button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane" id="user">
+            <div class="row mb-3">
+                <div class="search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" placeholder="Search" id="usersearch">
+                </div>
+
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Sort By</label>
+                        <select class="form-control" id="usersortBy" asp-for="View.Userss.SortBy">
+                            <option value="firstname">First Name</option>
+                            <option value="lastname">Last Name</option>
+                            <option value="middlename">Middle Name</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Sort Order</label>
+                        <select class="form-control" id="usersortOrder" asp-for="View.Userss.SortOrder">
+                            <option value="1">Ascending</option>
+                            <option value="2">Descending</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <table class="table table-bordered">
+                <thead class="table-info">
+                    <tr>
+                        <td scope="col">FULL NMAE</td>
+                        <td scope="col">GENDER</td>
+                        <td scope="col"> DATE OF BIRTH</td>
+                        <td scope="col"> ADDRESS</td>
+                        <td scope="col"> EMAIL</td>
+                        <td scope="col">Password</td>
+
+
+
+                    </tr>
+
+                </thead>
+                <tbody class="bg-light">
+                    @{
+                        if (Model.View.Userss != null && Model.View.Userss.Items != null && Model.View.Userss.Items.Count > 0)
+                        {
+                            foreach (var userr in Model?.View?.Userss?.Items)
+                            {
+
+
+                                <tr>
+
+                                    <td>@userr.FirstName @userr.MiddleName @userr.LastName </td>
+                                    <td>@userr.Gender</td>
+                                    <td>@userr.BirthDate.Date.ToString("MM/dd/yyyy") </td>
+                                    <td>@userr.Address</td>
+                                    <td>@userr.Email</td>
+                                    <td>
+                                        <!--Button For Modal Trigger-->
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="@string.Format("#editmodal{0}", userr.ID)">
+                                            <i class="fa fa-pencil">Update</i>
+                                        </button>
+                                        <!--Button For Modal Trigger-->
+                                        <!--Modal-->
+                                        <div class="modal " id="@string.Format("editmodal{0}",userr.ID)" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-light">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Change Password </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                                    </div>
+
+                                                    <div class="modal-body bg-light">
+                                                        <div class="container">
+                                                            <div class="card bg-light">
+                                                                <div class="card-body">
+                                                                    <div class="col-auto">
+                                                                        <form method="Post" asp-page-handler="Patientpass">
+
+                                                                            <div class="form-group">
+                                                                                <label asp-for="View.NewPass">New Password</label>
+                                                                                <input asp-for="View.NewPass" type="text" class="form-control" placeholder="Enter New password">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label asp-for="View.RetypedPassword">Re-type New Password</label>
+                                                                                <input asp-for="View.RetypedPassword" type="text" class="form-control" placeholder="Enter new Password">
+                                                                            </div>
+                                                                            <input type="hidden" class="form-control" placeholder="Enter Address" asp-for="View.UserID" value="@userr.ID">
+                                                                            <div class="form-group alert-danger">
+                                                                                @Html.ValidationSummary()
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <button type="submit" class="btn btn-primary">Update password</button>
+                                                                                <a href="~/dashboard/client" class="btn btn-secondary">Cancel</a>
+                                                                            </div>
+                                                                        </form>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+            <!--Button For Modal Trigger-->
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nadmin">
+                <i class="fa fa-pencil">ADD NEW ADMIN</i>
+            </button>
+            <!--Button For Modal Trigger-->
+
+            <div class="modal fade" id="nadmin" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content bg-light">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">NEW ADMIN</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                        </div>
+
+                        <div class="modal-body bg-light">
+                            <div class="col-auto ">
+                                <form method="Post" asp-page-handler="Newuser">
+                                    <div class="form-group">
+                                        <label asp-for="View.NewFirstName">FirstName</label>
+                                        <input type="text" class="form-control" placeholder="Enter FirstName" asp-for="View.NewFirstName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.NewMiddleName">MiddleName</label>
+                                        <input type="text" class="form-control" placeholder="Enter FirstName" asp-for="View.NewMiddleName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.NewLastName">LastName</label>
+                                        <input type="text" class="form-control" placeholder="Enter LastName" asp-for="View.NewLastName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.NewGender">Sex</label>
+                                        <select asp-for="View.NewGender" class="form-control" id="Sex">
+                                            <option value="1">Male</option>
+                                            <option value="0">Female</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="View.NewBirthDate">Birthdate</label>
+                                        <input type="date" class="form-control" placeholder="Enter abbreviation" asp-for="View.NewBirthDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.NewAddress">Address</label>
+                                        <input type="text" class="form-control" placeholder="Enter Address" asp-for="View.NewAddress">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.NewEmail">EmailAddress</label>
+                                        <input type="text" class="form-control" placeholder="Enter Email" asp-for="View.NewEmail">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.NewPassword">Password</label>
+                                        <input type="text" class="form-control" placeholder="Enter Password" asp-for="View.NewPassword">
+                                    </div>
+                                    <div class="form-group alert-danger">
+                                        @Html.ValidationSummary()
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Sign up</button>
+                                        <a href="~/index" class="btn btn-secondary">Cancel</a>
+                                    </div>
+
+
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane active" id="profile">
+
+            <div class="card bg-light">
+
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name:</th>
+                            <td>@ViewData["firstname"] @ViewData["middlename"] @ViewData["lastname"]</td>
+                        </tr>
+                        <tr>
+                            <th>Gender:</th>
+                            <td>@ViewData["gender"]</td>
+                        </tr>
+                        <tr>
+                            <th>Birthdate:</th>
+                            <td>@ViewData["birthdate"]</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>@ViewData["email"]</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>@ViewData["address"]</td>
+                        </tr>
+                    </table>
+
+
+                </div>
+
+                <div class="card-footer align-content-center justify-content-center">
+                    <div style="width: 500px" id="reader"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <a href="link-here" class="btn btn-primary">Proceed</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+
+
+
+        <div role="tabpanel" class="tab-pane" id="settings">
+
+            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangeInfo">
+                Change User Info
+            </button>
+            <div class="collapse" id="collapseChangeInfo">
+                <form method="Post" asp-page-handler="ChangeProfile">
+                    <div class="form-group">
+                        <label asp-for="View.FirstName">First Name</label>
+                        <input type="text" class="form-control" placeholder="Enter First Name" asp-for="View.FirstName" id="FName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.MiddleName">Middle Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Middle Name" asp-for="View.MiddleName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.LastName">Last Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Last Name" asp-for="View.LastName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.Address">Address</label>
+                        <input type="text" class="form-control" placeholder="Enter Address" asp-for="View.Address">
+                    </div>
+
+
+                    <div class="form-group alert-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+
+            <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangePass">
+                Change Password
+            </button>
+
+            <div class="collapse" id="collapseChangePass">
+                <form method="Post" asp-page-handler="ChangePass">
+                    <div class="form-group">
+                        <label asp-for="View.CurrentPass">Current Password</label>
+                        <input asp-for="View.CurrentPass" type="text" class="form-control" placeholder="Enter Current password">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.NewPass">New Password</label>
+                        <input asp-for="View.NewPass" type="text" class="form-control" placeholder="Enter New password">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.RetypedPassword">Re-type New Password</label>
+                        <input asp-for="View.RetypedPassword" type="text" class="form-control" placeholder="Enter new Password">
+                    </div>
+                    <div class="form-group alert-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Update password</button>
+                        <a href="~/dashboard/client" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="appts">
+            <div class="row mb-3">
+                <div class="search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" placeholder="Search" id="aptssearch">
+                </div>
+
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Sort By Name</label>
+                        <select class="form-control" id="aptssortBy" asp-for="View.Appts.SortBy">
+                            <option value="first">First Name</option>
+                            <option value="midllename">Middle Name</option>
+                            <option value="lastname">Last Name</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Filter by Status</label>
+                        <select class="form-control" id="aptsfilterBy" asp-for="View.StatusFilter">
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="noshow">Noshow</option>
+                            <option value="cancelled">Cancelled</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Filter by Date</label>
+                        <input type="date" class="form-control" id="aptsfilterDate" placeholder="Select date">
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead class="table-info">
+                    <tr>
+
+                        <td scope="col">FULL NAME</td>
+                        <td scope="col"> DATE TIME</td>
+                        <td scope="col">TYPE OF VISIT</td>
+                        <td scope="col">STATUS </td>
+                        <td scope="col"> DETAILS</td>
+
+
+                    </tr>
+
+                </thead>
+                <tbody class="bg-light">
+                    @{
+                        foreach (var appointment in Model?.View?.Appts.Items)
+                        {
+                            <tr>
+
+                                <td>@appointment?.Client?.FirstName @appointment?.Client?.MiddleName @appointment?.Client?.LastName </td>
+                                <td>@appointment?.StartTime.Value.ToString("dd/MM/yyyy")-@appointment?.StartTime.Value.ToString("H:mm tt")-@appointment?.EndTime.Value.ToString("H:mm tt")</td>
+                                <td>@appointment?.Visit</td>
+                                <td>@appointment?.Status</td>
+
+
+                                <td>
+                                    @if (appointment.Status == Status.Completed || appointment.Status == Status.Cancelled || appointment.Status == Status.NoShow || appointment.Status == Status.InProgress || appointment.Status == Status.Pending)
+                                    {
+                                        <a href="~/manage/details/Viewdetails?id=@appointment.ID" class="btn btn-success">
+                                            <i class="fa fa-pencil">View</i>
+                                        </a>
+
+                                    }
+
+
+                                </td>
+
+
+
+
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @{
+                        if (Model?.View?.Appts?.PageIndex > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="/manage/admin/dashboard?pageIndex=@(Model?.View?.Appts?.PageIndex-1)&pageSize=@(Model?.View?.Appts?.PageSize)&sortBy=@(Model?.View?.Appts?.SortBy)&sortOrder=@(Model?.View?.Appts?.SortOrder)">Previous</a></li>
+                        }
+
+                        <li class="page-item"><span class="page-link">page @Model?.View?.Appts?.PageIndex of @Model?.View?.Appts?.PageCount (@Model?.View?.Appts?.TotalRows total rows)</span></li>
+
+
+                        if (Model?.View?.Appts?.PageIndex < Model?.View?.Appts?.PageCount)
+                        {
+                            <li class="page-item"><a class="page-link" href="/manage/admin/dashboard?pageIndex=@(Model?.View?.Appts?.PageIndex+1)&pageSize=@(Model?.View?.Appts?.PageSize)&sortBy=@(Model?.View?.Appts?.SortBy)&sortOrder=@(Model?.View?.Appts?.SortOrder)">Next</a></li>
+                        }
+                    }
+                </ul>
+            </nav>
+
+        </div>
+
+
+
+        <div role="tabpanel" class="tab-pane" id="patients">
+
+            <div class="row mb-3">
+                <div class="search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" placeholder="Search" id="search">
+                </div>
+
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Sort By</label>
+                        <select class="form-control" id="sortBy" asp-for="View.Kliyente.SortBy">
+                            <option value="firstname">First Name</option>
+                            <option value="lastname">Last Name</option>
+                            <option value="middlename">Middle Name</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="">Sort Order</label>
+                        <select class="form-control" id="sortOrder" asp-for="View.Kliyente.SortOrder">
+                            <option value="1">Ascending</option>
+                            <option value="2">Descending</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <table class="table table-bordered">
+                <thead class="table-info">
+                    <tr>
+                        <td scope="col">FULL NAME</td>
+                        <td scope="col"> GENDER</td>
+                        <td scope="col"> DATE OF BIRTH</td>
+                        <td scope="col"> ADDRESS</td>
+                        <td scope="col"> RECORD </td>
+                        <td scope="col"> INFORMATION</td>
+
+                    </tr>
+
+                </thead>
+                <tbody class="table-light">
+                    @{
+                        if (Model.View.Kliyente != null && Model.View.Kliyente.Items != null && Model.View.Kliyente.Items.Count > 0)
+                        {
+                            foreach (var client in Model?.View?.Kliyente?.Items)
+                            {
+
+
+                                <tr>
+                                    <td>@client.FirstName @client.MiddleName @client.LastName </td>
+                                    <td>@client.Gender</td>
+                                    <td>@client.BirthDate.Date.ToString("MM/dd/yyyy") </td>
+                                    <td>@client.Address</td>
+
+
+
+                                    <td>
+
+
+                                        <a href="~/manage/Admin/Viewclient?id=@client.ID" class="btn btn-success">
+                                            <i class="fa fa-pencil">VIEW</i>
+                                        </a>
+
+
+
+                                    </td>
+
+                                    <td>
+
+
+
+
+                                        <!--Button For Modal Trigger-->
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="@string.Format("#editmodal{0}", client.ID)">
+                                            <i class="fa fa-pencil">EDIT</i>
+                                        </button>
+                                        <!--Button For Modal Trigger-->
+                                        <!--Modal-->
+                                        <div class="modal " id="@string.Format("editmodal{0}",client.ID)" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-light">
+                                                        <h5 class="modal-title" id="exampleModalLabel">EDIT </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                                    </div>
+
+                                                    <div class="modal-body bg-light">
+                                                        <div class="col-auto">
+
+                                                            <form method="Post" asp-page-handler="Edit">
+                                                                <div class="form-group">
+                                                                    <label asp-for="View.FirstName">FirstName</label>
+                                                                    <input type="text" class="form-control" placeholder="Enter FirstName" asp-for="View.EditFirstName" value="@client.FirstName">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label asp-for="View.MiddleName">MiddleName</label>
+                                                                    <input type="text" class="form-control" placeholder="Enter FirstName" asp-for="View.EditMiddleName" value="@client.MiddleName">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label asp-for="View.LastName">LastName</label>
+                                                                    <input type="text" class="form-control" placeholder="Enter LastName" asp-for="View.EditLastName" value="@client.LastName">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label asp-for="View.Address">Address</label>
+                                                                    <input type="text" class="form-control" placeholder="Enter Address" asp-for="View.EditAddress" value="@client.Address">
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <input type="hidden" class="form-control" placeholder="Enter Address" asp-for="View.EditPatientId" value="@client.ID">
+                                                                </div>
+
+
+                                                                <div class="form-group alert-danger">
+                                                                    @Html.ValidationSummary()
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                                    <a href="~/manage/admin/dashboard" class="btn btn-secondary">Cancel</a>
+                                                                </div>
+
+
+
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Modal-->
+
+
+
+
+
+
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @{
+                        if (Model?.View?.Kliyente?.PageIndex > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="/manage/admin/dashboard?pageIndex=@(Model?.View?.Kliyente?.PageIndex-1)&pageSize=@(Model?.View?.Kliyente?.PageSize)&sortBy=@(Model?.View?.Kliyente?.SortBy)&sortOrder=@(Model?.View?.Kliyente?.SortOrder)">Previous</a></li>
+                        }
+
+                        <li class="page-item"><span class="page-link">page @Model?.View?.Kliyente?.PageIndex of @Model?.View?.Kliyente?.PageCount (@Model?.View?.Kliyente?.TotalRows total rows)</span></li>
+
+
+                        if (Model?.View?.Kliyente?.PageIndex < Model?.View?.Kliyente?.PageCount)
+                        {
+                            <li class="page-item"><a class="page-link" href="/manage/admin/dashboard?pageIndex=@(Model?.View?.Kliyente?.PageIndex+1)&pageSize=@(Model?.View?.Kliyente?.PageSize)&sortBy=@(Model?.View?.Kliyente?.SortBy)&sortOrder=@(Model?.View?.Kliyente?.SortOrder)">Next</a></li>
+                        }
+                    }
+                </ul>
+            </nav>
+
+
+
+            <!--Button For Modal Trigger-->
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#npatient">
+                <i class="fa fa-pencil">ADD NEW CLIENT</i>
+            </button>
+            <!--Button For Modal Trigger-->
+
+            <div class="modal fade" id="npatient" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content bg-light">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Client</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                        </div>
+
+                        <div class="modal-body bg-mustardlite">
+                            <div class="col-auto ">
+                                <form method="Post" asp-page-handler="Patient">
+                                    <div class="form-group">
+                                        <label asp-for="View.AddFirstName">FirstName</label>
+                                        <input type="text" class="form-control" placeholder="Enter FirstName" asp-for="View.AddFirstName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.AddMiddleName">MiddleName</label>
+                                        <input type="text" class="form-control" placeholder="Enter FirstName" asp-for="View.AddMiddleName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.AddLastName">LastName</label>
+                                        <input type="text" class="form-control" placeholder="Enter LastName" asp-for="View.AddLastName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.AddGender">Sex</label>
+                                        <select asp-for="View.Gender" class="form-control" id="Sex">
+                                            <option value="1">Male</option>
+                                            <option value="0">Female</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="View.AddBirthDate">Birthdate</label>
+                                        <input type="date" class="form-control" placeholder="Enter abbreviation" asp-for="View.AddBirthDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.AddAddress">Address</label>
+                                        <input type="text" class="form-control" placeholder="Enter Address" asp-for="View.AddAddress">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.AddEmail">EmailAddress</label>
+                                        <input type="text" class="form-control" placeholder="Enter Email" asp-for="View.AddEmail">
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="View.AddPass">Password</label>
+                                        <input type="text" class="form-control" placeholder="Enter Password" asp-for="View.AddPass">
+                                    </div>
+                                    <div class="form-group alert-danger">
+                                        @Html.ValidationSummary()
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Sign up</button>
+                                        <a href="~/index" class="btn btn-secondary">Cancel</a>
+                                    </div>
+
+
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Appointment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <a href="link-here" class="btn btn-primary">Proceed</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle on success condition with the decoded text or result.
+            const modal = new bootstrap.Modal("#exampleModal")
+            console.log(`Scan result: ${decodedText}`, decodedResult);
+            $("#exampleModal").find(".modal-body").text(`${decodedText}`);
+            $("a[href='link-here']").attr('href', `${decodedText}`)
+            modal.show();
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var url = window.location.href;
+            var activeTab = url.substring(url.indexOf("#") + 1);
+            if (activeTab == "patients" || activeTab == "appts" || activeTab == "user") {
+                $(".tab-pane").removeClass("active");
+                $("#" + activeTab).addClass("active");
+                $(".nav-link").removeClass("active");
+                $("#Nav" + activeTab).addClass("active");
+                $('a[href="' + activeTab + '"]').tab('show')
+
+            }
+        });
+
+
+        $("#search").keyup(function (event) {
+            if (event.keyCode === 13) {
+                window.location = "/manage/admin/dashboard?keyword=" + $("#search").val() + "#patients";
+            }
+        });
+
+        $("#aptssearch").keyup(function (event) {
+            if (event.keyCode === 13) {
+                window.location = "/manage/admin/dashboard?keyword=" + $("#aptssearch").val() + "#appts";
+            }
+        });
+        $("#usersearch").keyup(function (event) {
+            if (event.keyCode === 13) {
+                window.location = "/manage/admin/dashboard?keyword=" + $("#usersearch").val() + "#user";
+            }
+        });
+        //user
+
+        $("#usersortBy").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#usersortBy").val() + "&sortOrder=" + $("#usersortOrder").val() + "#user";
+        });
+        $("#usersortOrder").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#usersortBy").val() + "&sortOrder=" + $("#usersortOrder").val() + "#user";
+        });
+        //
+        $("#sortBy").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val() + "&status=" + $("#aptsfilterBy").val() + "&date=" + $("#aptsfilterDate").val() + "#patients";
+        });
+        $("#sortOrder").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val() + "&status=" + $("#aptsfilterBy").val() + "&date=" + $("#aptsfilterDate").val() + "#patients";
+        });
+        //apts
+
+        $("#aptssortBy").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#aptssortBy").val() + "&sortOrder=" + $("#sortOrder").val() + "&status=" + $("#aptsfilterBy").val() + "&date=" + $("#aptsfilterDate").val() + "#appts";
+        });
+
+        $("#aptssortOrder").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#aptssortBy").val() + "&sortOrder=" + $("#aptssortOrder").val() + "&status=" + $("#aptsfilterBy").val() + "&date=" + $("#aptsfilterDate").val() + "#appts";
+        });
+        $("#aptsfilterBy").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#aptssortBy").val() + "&sortOrder=" + $("#aptssortOrder").val() + "&status=" + $("#aptsfilterBy").val() + "&date=" + $("#aptsfilterDate").val() + "#appts";
+        });
+        $("#aptsfilterDate").change(function () {
+            window.location = "/manage/admin/dashboard?keyword=@(Model.View.Kliyente?.Keyword)&sortBy=" + $("#aptssortBy").val() + "&sortOrder=" + $("#aptssortOrder").val() + "&status=" + $("#aptsfilterBy").val() + "&date=" + $("#aptsfilterDate").val() + "#appts";
+        });
+
+
+    </script>
+
+
+}

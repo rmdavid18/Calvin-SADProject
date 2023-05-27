@@ -1,0 +1,47 @@
+﻿@page
+@model Capstonep2.Pages.Manage.QrCode.GeneratorModel
+@{
+}
+
+<div class="container align-content-center justify-content-center">
+    <div class="row justify-content-center">
+        <div class="col-5 d-flex">
+            <div class="card bg-light">
+                <div class="justify-content-center">
+                    <h3 class="align-content-center">Print or Screenshot</h3>
+                </div>
+                <div class="card-body bg-light">
+                    <div id="qrcode"></div>
+                    <button id="qrprint">PRINT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+    <script>
+
+        var url = window.location.href;
+        var id = url.substring(url.lastIndexOf('=') + 1);
+
+        window.addEventListener("load", () => {
+
+            var qrc = new QRCode(document.getElementById("qrcode"), "http://localhost:25788/manage/details/Viewdetails?id=" + id);
+        });
+        $("#qrprint").click(function () {
+
+
+            var prtContent = document.getElementById("printable");
+            var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+            WinPrint.document.write(prtContent.innerHTML);
+            WinPrint.document.close();
+            WinPrint.focus();
+            WinPrint.print();
+            WinPrint.close();
+        });
+    </script>
+}
